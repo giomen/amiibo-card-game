@@ -1,0 +1,21 @@
+.Game {
+  max-width: 1200px;
+  padding: 16px;
+
+  &__new {
+    padding: 8px 16px;
+    margin-bottom: 30px;
+    display: inline-block;
+    background: #D42990;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-gap: 8px;
+  }
+}

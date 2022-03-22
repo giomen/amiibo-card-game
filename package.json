@@ -1,12 +1,12 @@
 {
-  "name": "gatsby-starter-hello-world",
+  "name": "amiibo-memory-game",
   "private": true,
-  "description": "A simplified bare-bones starter for Gatsby",
+  "description": "A simply memory card game develop with gatsby and react",
   "version": "0.1.0",
   "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
-    "develop": "gatsby develop",
+    "dev": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "gatsby develop",
     "serve": "gatsby serve",
@@ -15,17 +15,39 @@
   },
   "dependencies": {
     "gatsby": "^4.10.1",
+    "gatsby-plugin-image": "^2.10.0",
+    "gatsby-plugin-sass": "^5.10.1",
+    "gatsby-transformer-sharp": "^4.10.0",
+    "node-sass": "^6.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
-    "prettier": "^2.6.0"
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.14.0",
+    "gatsby-image": "^3.11.0",
+    "gatsby-plugin-sharp": "^4.10.1",
+    "gatsby-source-filesystem": "^4.10.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.6.0",
+    "typescript": "^4.4.4"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-hello-world"
+  "resolutions": {
+    "@types/react": "^17"
   },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
