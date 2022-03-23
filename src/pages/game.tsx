@@ -10,12 +10,13 @@ import Loader from "../components/Loader/Loader"
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [turns, setTurns] = useState<number>(0)
   const [cardImages, setCardImages] = useState<CardImagesInterface[]>([])
   const [randomImages, setRandomCardImages] = useState<CardImagesInterface[]>([])
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
+  const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
 
   /***
    * Creates a randomized list of cards, duplicating the original list of cards
@@ -46,6 +47,7 @@ const Game = ({ location }) => {
     setChoiceOne(null)
     setChoiceTwo(null)
     setTurns(prevState => prevState + 1)
+    setCardDisabled(false)
   }
 
   /***
@@ -70,6 +72,7 @@ const Game = ({ location }) => {
 
   useEffect(() => {
     if (choiceOne && choiceTwo) {
+      setCardDisabled(true)
       if (checkChoices(choiceOne.src, choiceTwo.src)) {
         setRandomCardImages(prevState => {
           return prevState.map((card: CardImagesInterface) => {
@@ -94,7 +97,6 @@ const Game = ({ location }) => {
       })
       .then(
         (result: Amiibo) => {
-
           let cards = result.amiibo.map(item => {
             return { src: item.image, pair: false }
           }).splice(0, Math.floor(Math.random() * result.amiibo.length))
@@ -130,6 +132,7 @@ const Game = ({ location }) => {
                   <GameCard
                     isFlipped={isCardFlipped(item)}
                     handleChoice={handleChoice}
+                    isDisabled={isCardDisabled}
                     item={item} />
                 </div>
               )

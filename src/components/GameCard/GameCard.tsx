@@ -8,7 +8,7 @@ import { StaticImage } from "gatsby-plugin-image"
 const GameCard = (props: GameCardProps) => {
 
   const handleClick = () => {
-    if(!props.isFlipped) {
+    if(!props.isDisabled) {
       props.handleChoice(props.item)
     }
   }

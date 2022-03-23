@@ -4,4 +4,5 @@ export interface GameCardProps {
   item: CardImagesInterface;
   handleChoice: (item: CardImagesInterface) => void;
   isFlipped: boolean;
+  isDisabled: boolean;
 }
