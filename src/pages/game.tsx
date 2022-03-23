@@ -93,6 +93,9 @@ const Game = ({ location }) => {
   useEffect(() => {
     fetch(`${AppConstants.API_PATHS.BASE_URL}${PARTIAL_API_PATHS.GAME_SERIES}${location.state.gameSeries}`)
       .then(res => {
+        if(!res.ok) {
+          throw new Error('Sorry, could not fetch data from the server')
+        }
         return res.json()
       })
       .then(
@@ -110,6 +113,7 @@ const Game = ({ location }) => {
           setError(error)
         }
       )
+      .catch(e => setError(e))
   }, [])
 
   if (error) {
