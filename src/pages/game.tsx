@@ -14,8 +14,8 @@ const Game = ({ location }) => {
   const [turns, setTurns] = useState<number>(0)
   const [cardImages, setCardImages] = useState<CardImagesInterface[]>([])
   const [randomImages, setRandomCardImages] = useState<CardImagesInterface[]>([])
-  const [choiceOne, setChoiceOne] = useState(null)
-  const [choiceTwo, setChoiceTwo] = useState(null)
+  const [choiceOne, setChoiceOne] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
+  const [choiceTwo, setChoiceTwo] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
 
   /***
@@ -44,8 +44,8 @@ const Game = ({ location }) => {
    * Every two choices, reset values and increment the turn
    */
   const resetChoices = (): void => {
-    setChoiceOne(null)
-    setChoiceTwo(null)
+    setChoiceOne(null as unknown as CardImagesInterface)
+    setChoiceTwo(null as unknown as CardImagesInterface)
     setTurns(prevState => prevState + 1)
     setCardDisabled(false)
   }
