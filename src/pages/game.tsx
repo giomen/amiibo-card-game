@@ -82,7 +82,7 @@ const Game = ({ location }) => {
         })
         resetChoices()
       } else {
-        resetChoices()
+        setTimeout(() => resetChoices(), 1000)
       }
     }
   }, [choiceOne, choiceTwo])
@@ -124,7 +124,6 @@ const Game = ({ location }) => {
         <div className={styles.Game__grid}>
           {
             randomImages.map(item => {
-              console.log("item: ", item)
               return (
                 <div className={styles.Game__grid}
                      key={item.id}>

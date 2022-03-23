@@ -11,9 +11,11 @@
   &--isFlipped {
     .GameCard__card--front {
       transform: rotateY(0deg);
+      transition-delay: 0.2s;
     }
     .GameCard__card--back {
       transform: rotateY(-90deg);
+      transition-delay: 0s;
     }
   }
 
@@ -25,13 +27,13 @@
     &--front {
       position: absolute;
       transform: rotateY(90deg);
-      transition: all .3s ease;
+      transition: all 0.2s ease;
       background: #fafafa;
     }
 
     &--back {
       transform: rotateY(0deg);
-      transition: all .3s ease;
+      transition: all 0.2s ease 0.2s;
       display: flex;
       padding: 8px;
       background: #fafafa;

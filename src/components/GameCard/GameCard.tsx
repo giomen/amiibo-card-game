@@ -14,7 +14,6 @@ const GameCard = (props: GameCardProps) => {
   }
 
   const checkFlipped = (): boolean => {
-    console.log('check: ', props.item.pair)
     return props.isFlipped || props.item.pair
   }
 
