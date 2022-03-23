@@ -11,7 +11,7 @@ type Props = {
 const HomeCard = (props: Props) => {
 
   return <Link to="/game" state={{ gameSeries: props.item.name }}>
-            <div className={styles.HomeCard}>
+            <div>
               <div className={styles.HomeCard__wrapper}>
                 <GatsbyImage image={getImage(props.item.childImageSharp.gatsbyImageData)}
                              alt="Amiibo image" />

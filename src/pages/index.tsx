@@ -4,9 +4,13 @@ import * as styles from '../styles/home.module.scss'
 import HomeCard from "../components/HomeCard/HomeCard"
 import { graphql } from "gatsby"
 import { GatsbyImageSharp } from "../components/HomeCard/model"
-
+import { useEffect, useState } from "react"
+import { Amiibo } from "../shared/models/gameSeries.interface"
+import { AppConstants } from "../shared/app-constants"
+import { PARTIAL_API_PATHS } from "../shared/api-path"
 
 export default function Home({data}) {
+
   const title = 'Amiibo Memory Card Game'
 
   const HomeCardRenderer = (nodes: GatsbyImageSharp[]) =>

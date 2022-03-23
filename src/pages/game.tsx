@@ -1,11 +1,12 @@
 import * as React from "react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AppConstants } from "../shared/app-constants"
 import { PARTIAL_API_PATHS } from "../shared/api-path"
 import { Amiibo } from "../shared/models/gameSeries.interface"
 import { CardImagesInterface } from "../shared/models/cardImages.interface"
 import * as styles from "../styles/game.module.scss"
-import { GameCard } from "../components/GameCard/GameCard"
+import GameCard from "../components/GameCard/GameCard"
+import Loader from "../components/Loader/Loader"
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null)
@@ -16,46 +17,63 @@ const Game = ({ location }) => {
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
 
-  const randomCards = () => {
-    const randomizedCards = [...cardImages, ...cardImages]
-      .sort(() => Math.random() - 0.5)
-      .map(card => ({ ...card, id: Math.random().toString() }))
-    setRandomCardImages(randomizedCards)
-    setTurns(0)
+  /***
+   * Creates a randomized list of cards, duplicating the original list of cards
+   * and setting the property state.
+   * It also set the turn's counter to 0, meaning that the game is beginning
+   */
+  const randomCards = (cards: CardImagesInterface[]) => {
+      const randomizedCards = [...cards, ...cards]
+        .sort(() => Math.random() - 0.5)
+        .map(card => ({ ...card, id: Math.random().toString() }))
+      setRandomCardImages(randomizedCards)
+      setTurns(0)
   }
 
-  const handleChoice = (item: CardImagesInterface) => {
-    if(choiceOne) {
-      /***
-       *  If user clicked twice on a same card
-       *  simply set again choiceOne
-       *  otherwise set the second choice
-       */
-        setChoiceTwo(item)
-      } else {
-        setChoiceOne(item)
-      }
+  /***
+   *
+   * Check at which move the player is
+   * @param card {CardImagesInterface} card to check
+   */
+  const handleChoice = (card: CardImagesInterface): void => {
+    choiceOne ? setChoiceTwo(card) : setChoiceOne(card)
   }
 
   /***
    * Every two choices, reset values and increment the turn
    */
-  const resetChoices = () => {
-    setChoiceOne(null);
-    setChoiceTwo(null);
+  const resetChoices = (): void => {
+    setChoiceOne(null)
+    setChoiceTwo(null)
     setTurns(prevState => prevState + 1)
   }
 
-  const checkChoices = (src1: string, src2: string) => {
+  /***
+   *
+   * @param src1 {string} card to compare
+   * @param src2 {string} second card to compare
+   * @return {boolean} returns true if the cards are the same
+   */
+  const checkChoices = (src1: string, src2: string): boolean => {
     return src1 === src2
   }
 
+  /***
+   *
+   * @param card {CardImagesInterface} card to check
+   * @return {boolean} returns true if the card is clicked for the first/second
+   * choice or if is pair
+   */
+  const isCardFlipped = (card: CardImagesInterface): boolean => {
+    return (card === choiceOne) || (card === choiceTwo) || (card.pair)
+  }
+
   useEffect(() => {
-     if (choiceOne && choiceTwo) {
-      if(checkChoices(choiceOne.src, choiceTwo.src)) {
-        setCardImages(prevState => {
+    if (choiceOne && choiceTwo) {
+      if (checkChoices(choiceOne.src, choiceTwo.src)) {
+        setRandomCardImages(prevState => {
           return prevState.map((card: CardImagesInterface) => {
-            if(card.src === choiceOne.src) {
+            if (card.src === choiceOne.src) {
               return { ...card, pair: true }
             } else {
               return card
@@ -76,12 +94,13 @@ const Game = ({ location }) => {
       })
       .then(
         (result: Amiibo) => {
-          //non serve
-          //setItems(result.amiibo)
-          setCardImages(result.amiibo.map(item => {
-            return { src: item.image, id: '', pair: false }
-          }))
-          randomCards()
+
+          let cards = result.amiibo.map(item => {
+            return { src: item.image, pair: false }
+          }).splice(0, Math.floor(Math.random() * result.amiibo.length))
+
+          randomCards(cards)
+          setCardImages(cards)
           setIsLoaded(true)
         },
         (error) => {
@@ -89,30 +108,33 @@ const Game = ({ location }) => {
           setError(error)
         }
       )
-  }, [isLoaded])
-
+  }, [])
 
   if (error) {
     return <div>Error: {error.message}</div>
   } else if (!isLoaded) {
-    return <div>Loading...</div>
+    return <Loader />
   } else {
     return (
       <div className={styles.Game}>
         <div className={styles.Game__new}
-             onClick={randomCards}>
+             onClick={() => randomCards(cardImages)}>
           Nuova partita
         </div>
         <div className={styles.Game__grid}>
           {
-            randomImages.map(item => (
-              <div className={styles.Game__grid}
-                   key={item.id}>
-                <GameCard
-                  handleChoice={handleChoice}
-                  item={item} />
-              </div>
-            ))
+            randomImages.map(item => {
+              console.log("item: ", item)
+              return (
+                <div className={styles.Game__grid}
+                     key={item.id}>
+                  <GameCard
+                    isFlipped={isCardFlipped(item)}
+                    handleChoice={handleChoice}
+                    item={item} />
+                </div>
+              )
+            })
           }
         </div>
       </div>

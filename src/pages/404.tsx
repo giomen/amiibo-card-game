@@ -1,6 +1,6 @@
-import React from "react"
+import * as React from "react"
 
-function NotFound(props) {
+function NotFound() {
   return (
       <div>
         <h1>Page not found</h1>
