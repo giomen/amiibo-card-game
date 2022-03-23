@@ -6,6 +6,8 @@
 
   &__wrapper {
     position: relative;
+    background: #fafafa;
+    padding: 8px;
   }
 
   &--isFlipped {
@@ -28,7 +30,13 @@
       position: absolute;
       transform: rotateY(90deg);
       transition: all 0.2s ease;
-      background: #fafafa;
+      max-height: 70%;
+      max-width: 70%;
+      margin: auto;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
     }
 
     &--back {
