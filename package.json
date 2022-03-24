@@ -2,7 +2,7 @@
   "name": "amiibo-memory-game",
   "private": true,
   "description": "A simply memory card game develop with gatsby and react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
