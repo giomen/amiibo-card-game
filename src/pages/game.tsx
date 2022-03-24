@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { AppConstants } from "../shared/app-constants"
 import { PARTIAL_API_PATHS } from "../shared/api-path"
 import { Amiibo } from "../shared/models/gameSeries.interface"
@@ -7,6 +7,8 @@ import { CardImagesInterface } from "../shared/models/cardImages.interface"
 import * as styles from "../styles/game.module.scss"
 import GameCard from "../components/GameCard/GameCard"
 import Loader from "../components/Loader/Loader"
+import Layout from "../components/layoutComponents/Layout"
+import Modal from "../components/Modal/Modal"
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null)
@@ -17,18 +19,40 @@ const Game = ({ location }) => {
   const [choiceOne, setChoiceOne] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [choiceTwo, setChoiceTwo] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
-
+  const [isModalOpen, setModalVisibility] = useState<boolean>(false)
   /***
    * Creates a randomized list of cards, duplicating the original list of cards
    * and setting the property state.
    * It also set the turn's counter to 0, meaning that the game is beginning
    */
-  const randomCards = (cards: CardImagesInterface[]) => {
-      const randomizedCards = [...cards, ...cards]
-        .sort(() => Math.random() - 0.5)
-        .map(card => ({ ...card, id: Math.random().toString() }))
-      setRandomCardImages(randomizedCards)
-      setTurns(0)
+  const randomCards = (cards: CardImagesInterface[]): void => {
+    if(cardImages.length > 0) {
+      cards = [...cardImages]
+    }
+    const tempCards = reduceCards(cards)
+
+    const randomizedCards = [...tempCards, ...tempCards]
+      .sort(() => Math.random() - 0.5)
+      .map(card => ({ ...card, id: Math.random().toString() }))
+    setRandomCardImages(randomizedCards)
+    setTurns(0)
+  }
+
+  /***
+   *
+   *
+   */
+  const reduceCards = (cards: CardImagesInterface[]): CardImagesInterface[] => {
+    return cards.slice(0, Math.ceil(getRandomArbitrary(6, cards.length - 1)))
+  }
+
+  /***
+   *
+   * @param min {number}
+   * @param max {number}
+   */
+  const getRandomArbitrary = (min: number, max: number): number => {
+    return Math.random() * (max - min) + min;
   }
 
   /***
@@ -93,8 +117,8 @@ const Game = ({ location }) => {
   useEffect(() => {
     fetch(`${AppConstants.API_PATHS.BASE_URL}${PARTIAL_API_PATHS.GAME_SERIES}${location.state.gameSeries}`)
       .then(res => {
-        if(!res.ok) {
-          throw new Error('Sorry, could not fetch data from the server')
+        if (!res.ok) {
+          throw new Error("Sorry, could not fetch data from the server")
         }
         return res.json()
       })
@@ -102,7 +126,7 @@ const Game = ({ location }) => {
         (result: Amiibo) => {
           let cards = result.amiibo.map(item => {
             return { src: item.image, pair: false }
-          }).splice(0, Math.floor(Math.random() * result.amiibo.length))
+          })
 
           randomCards(cards)
           setCardImages(cards)
@@ -122,28 +146,37 @@ const Game = ({ location }) => {
     return <Loader />
   } else {
     return (
-      <div className={styles.Game}>
-        <div className={styles.Game__new}
-             onClick={() => randomCards(cardImages)}>
-          Nuova partita
+      <Layout>
+        <div className={styles.Game}>
+          <div>
+            <h2>{location.state.gameSeries} Series!</h2>
+            <p>Find out all the matching cards!</p>
+            <div className={styles.Game__new}
+                 onClick={() => randomCards(cardImages)}>
+              New Game
+            </div>
+          </div>
+          <div className={styles.Game__grid}>
+            {
+              randomImages.map(item => {
+                return (
+                  <div className={styles.Game__grid}
+                       key={item.id}>
+                    <GameCard
+                      isFlipped={isCardFlipped(item)}
+                      handleChoice={handleChoice}
+                      isDisabled={isCardDisabled}
+                      item={item} />
+                  </div>
+                )
+              })
+            }
+          </div>
         </div>
-        <div className={styles.Game__grid}>
-          {
-            randomImages.map(item => {
-              return (
-                <div className={styles.Game__grid}
-                     key={item.id}>
-                  <GameCard
-                    isFlipped={isCardFlipped(item)}
-                    handleChoice={handleChoice}
-                    isDisabled={isCardDisabled}
-                    item={item} />
-                </div>
-              )
-            })
-          }
-        </div>
-      </div>
+        <Modal isOpen={isModalOpen}
+               onClose={() => setModalVisibility(false)}
+               title="Titolo modale"/>
+      </Layout>
     )
   }
 }

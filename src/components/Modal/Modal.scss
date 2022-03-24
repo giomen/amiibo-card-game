@@ -1,0 +1,40 @@
+.Modal {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__wrapper {
+    display: grid;
+    grid-template-rows: auto 3fr auto;
+    max-width: 70%;
+    min-height: 200px;
+    background: #fafafa;
+    min-width: 360px;
+    max-height: 70%;
+    border-radius: 8px;
+  }
+
+  &__header{
+    padding: 8px 16px;
+    color: #222;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__close {
+    color: red;
+    cursor: pointer;
+  }
+
+  &__content {
+  }
+
+  &__footer {
+    padding: 8px 16px;
+  }
+}

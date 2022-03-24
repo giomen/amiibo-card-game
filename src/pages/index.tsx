@@ -1,34 +1,35 @@
 import * as React from "react"
-import '../styles/global.scss'
-import * as styles from '../styles/home.module.scss'
+import "../styles/global.scss"
+import * as styles from "../styles/home.module.scss"
 import HomeCard from "../components/HomeCard/HomeCard"
 import { graphql } from "gatsby"
 import { GatsbyImageSharp } from "../components/HomeCard/model"
-import { useEffect, useState } from "react"
-import { Amiibo } from "../shared/models/gameSeries.interface"
-import { AppConstants } from "../shared/app-constants"
-import { PARTIAL_API_PATHS } from "../shared/api-path"
+import Layout from "../components/layoutComponents/Layout"
 
-export default function Home({data}) {
-
-  const title = 'Amiibo Memory Card Game'
+export default function Home({ data }) {
 
   const HomeCardRenderer = (nodes: GatsbyImageSharp[]) =>
-        (
-          nodes.filter((item: GatsbyImageSharp) => item.relativeDirectory === "cards")
-                          .map((image: GatsbyImageSharp) => {
-                            return (<HomeCard item={image}
-                                      key={image.childImageSharp.id} />)
-                          })
-        )
+    (
+      nodes.filter((item: GatsbyImageSharp) => item.relativeDirectory === "cards")
+        .map((image: GatsbyImageSharp) => {
+          return (<HomeCard item={image}
+                            key={image.childImageSharp.id} />)
+        })
+    )
 
-
-  return <div className={styles.home}>
-    <h1>{title}</h1>
-    <div className={styles.cardContainer}>
-      {HomeCardRenderer(data.allFile.nodes)}
-    </div>
-  </div>
+  return (
+    <>
+      <Layout>
+        <div className={styles.home}>
+          <h1>{data.site.siteMetadata.title}</h1>
+          <div className={styles.cardContainer}>
+            {HomeCardRenderer(data.allFile.nodes)}
+          </div>
+        </div>
+      </Layout>
+      <div id="portal"/>
+    </>
+  )
 }
 
 export const query = graphql`
@@ -40,6 +41,14 @@ export const query = graphql`
                 }
                 relativeDirectory
                 name
+            }
+        }
+        site {
+            siteMetadata {
+                contact
+                copyright
+                description
+                title
             }
         }
     }

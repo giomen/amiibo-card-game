@@ -23,6 +23,7 @@ const GameCard = (props: GameCardProps) => {
 
   return (
     <div className={classMap()}>
+
       <div className="GameCard__wrapper">
         <div className="GameCard__card--front">
           <picture>
