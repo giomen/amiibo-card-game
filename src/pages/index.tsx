@@ -27,7 +27,6 @@ export default function Home({ data }) {
           </div>
         </div>
       </Layout>
-      <div id="portal"/>
     </>
   )
 }

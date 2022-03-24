@@ -1,10 +1,9 @@
 // @flow
 import * as React from "react"
-import ReactDom from 'react-dom';
 import { ModalProps } from "./model"
 import "./Modal.scss"
 
-const Modal = ReactDom.createPortal(props: ModalProps, { children }) =>
+const Modal = (props: ModalProps, { children }) =>
   !props.isOpen ? null : (
     <div className="Modal">
       <div className="Modal__wrapper">
