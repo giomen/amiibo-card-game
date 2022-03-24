@@ -11,7 +11,7 @@ import Layout from '../components/layoutComponents/Layout'
 import Modal from '../components/Modal/Modal'
 
 const Game = ({ location }) => {
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null as unknown as string)
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [turns, setTurns] = useState<number>(0)
   const [matchedCards, setMatchedCards] = useState<number>(2)
@@ -42,11 +42,13 @@ const Game = ({ location }) => {
   }
 
   /***
-   *
-   *
+   * returns a subset of cards, because often there are too many card for the game
+   * @param cards {CardImagesInterface[]}
+   * @return {CardImagesInterface[]}
    */
   const reduceCards = (cards: CardImagesInterface[]): CardImagesInterface[] => {
-    return cards.slice(0, Math.ceil(getRandomArbitrary(6, cards.length - 1)))
+    const maxValue = cards.length > 15 ? 15 : cards.length
+    return cards.slice(0, Math.ceil(getRandomArbitrary(6, maxValue)))
   }
 
   /***
@@ -146,7 +148,7 @@ const Game = ({ location }) => {
           setCardImages(cards)
           setIsLoaded(true)
         },
-        (error) => {
+        (error: Error) => {
           setIsLoaded(true)
           setError(error)
         }
@@ -162,7 +164,7 @@ const Game = ({ location }) => {
     return (
       <Layout>
         <div className={styles.Game}>
-          <div>
+          <div className={styles.Game__heading}>
             <h2>{location.state.gameSeries} Series!</h2>
             <p>Find out all the matching cards!</p>
             <div className={styles.Game__new}

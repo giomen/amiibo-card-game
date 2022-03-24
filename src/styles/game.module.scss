@@ -1,15 +1,22 @@
 .Game {
-  max-width: 1200px;
+  max-width: 960px;
   padding: 16px;
 
   &__new {
     padding: 8px 16px;
     display: inline-block;
     background: #D42990;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-top: 20px;
     font-weight: 500;
     cursor: pointer;
+    align-self: flex-start;
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__grid {

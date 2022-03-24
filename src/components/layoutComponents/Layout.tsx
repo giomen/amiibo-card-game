@@ -2,8 +2,13 @@ import * as React from "react"
 import Navbar from "./Navbar"
 import '../../styles/global.scss'
 import {graphql, useStaticQuery} from "gatsby";
+import { ReactNode } from "react"
 
-const Layout = ({children}) => {
+type Props = {
+  children: ReactNode
+}
+
+const Layout = (props: Props) => {
 
     const data = useStaticQuery(graphql`
             query ContactQuery {
@@ -22,7 +27,7 @@ const Layout = ({children}) => {
         <div className="Layout">
             <Navbar/>
             <div className="Layout__content">
-                {children}
+                {props.children}
             </div>
             <footer>
                 <p>{copyright}</p>
