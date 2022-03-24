@@ -1,14 +1,10 @@
 import * as React from "react"
-import * as styles from './HomeCard.module.scss'
-import { getImage, GatsbyImage } from "gatsby-plugin-image"
-import { GatsbyImageSharp } from "./model"
+import * as styles from "./HomeCard.module.scss"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import { HomeCardProps } from "./model"
 import { Link } from "gatsby"
 
-type Props = {
-  item: GatsbyImageSharp
-}
-
-const HomeCard = (props: Props) => {
+const HomeCard = (props: HomeCardProps) => {
 
   return <Link to="/game"
                state={{ gameSeries: props.item.name }}>

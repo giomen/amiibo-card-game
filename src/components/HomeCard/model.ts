@@ -9,3 +9,7 @@ export interface GatsbyImageSharp {
   relativeDirectory: string;
   name: string;
 }
+
+export interface HomeCardProps {
+  item: GatsbyImageSharp
+}
