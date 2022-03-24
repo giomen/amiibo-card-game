@@ -5,7 +5,6 @@ import { HomeCardProps } from "./model"
 import { Link } from "gatsby"
 
 const HomeCard = (props: HomeCardProps) => {
-
   return <Link to="/game"
                state={{ gameSeries: props.item.name }}>
             <div>
