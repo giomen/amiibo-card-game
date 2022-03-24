@@ -21,7 +21,7 @@ export default function Home({ data }) {
     <>
       <Layout>
         <div className={styles.home}>
-          <h1>{data.site.siteMetadata.title}</h1>
+          <h1 className={styles.title}>Choose your favourite game</h1>
           <div className={styles.cardContainer}>
             {HomeCardRenderer(data.allFile.nodes)}
           </div>

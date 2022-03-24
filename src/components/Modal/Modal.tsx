@@ -3,18 +3,16 @@ import * as React from "react"
 import { ModalProps } from "./model"
 import "./Modal.scss"
 
-const Modal = (props: ModalProps, { children }) =>
+const Modal = (props: ModalProps) =>
   !props.isOpen ? null : (
     <div className="Modal">
       <div className="Modal__wrapper">
         <div className="Modal__header">
-          {props.title}
           <div className="Modal__close" onClick={props.onClose}>Close</div>
         </div>
         <div className="Modal__content">
-          {children}
+          {props.children}
         </div>
-        <div className="Modal__footer"></div>
       </div>
     </div>
   )

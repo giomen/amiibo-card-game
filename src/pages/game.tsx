@@ -4,18 +4,19 @@ import { AppConstants } from "../shared/app-constants"
 import { PARTIAL_API_PATHS } from "../shared/api-path"
 import { Amiibo } from "../shared/models/gameSeries.interface"
 import { CardImagesInterface } from "../shared/models/cardImages.interface"
-import * as styles from "../styles/game.module.scss"
-import GameCard from "../components/GameCard/GameCard"
-import Loader from "../components/Loader/Loader"
-import Layout from "../components/layoutComponents/Layout"
-import Modal from "../components/Modal/Modal"
+import * as styles from '../styles/game.module.scss'
+import GameCard from '../components/GameCard/GameCard'
+import Loader from '../components/Loader/Loader'
+import Layout from '../components/layoutComponents/Layout'
+import Modal from '../components/Modal/Modal'
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null)
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [turns, setTurns] = useState<number>(0)
+  const [matchedCards, setMatchedCards] = useState<number>(2)
   const [cardImages, setCardImages] = useState<CardImagesInterface[]>([])
-  const [randomImages, setRandomCardImages] = useState<CardImagesInterface[]>([])
+  const [randomCards, setRandomCards] = useState<CardImagesInterface[]>([])
   const [choiceOne, setChoiceOne] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [choiceTwo, setChoiceTwo] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
@@ -25,7 +26,8 @@ const Game = ({ location }) => {
    * and setting the property state.
    * It also set the turn's counter to 0, meaning that the game is beginning
    */
-  const randomCards = (cards: CardImagesInterface[]): void => {
+  const randomizeCards = (cards: CardImagesInterface[]): void => {
+    setModalVisibility(false)
     if(cardImages.length > 0) {
       cards = [...cardImages]
     }
@@ -34,8 +36,9 @@ const Game = ({ location }) => {
     const randomizedCards = [...tempCards, ...tempCards]
       .sort(() => Math.random() - 0.5)
       .map(card => ({ ...card, id: Math.random().toString() }))
-    setRandomCardImages(randomizedCards)
+    setRandomCards(randomizedCards)
     setTurns(0)
+    setMatchedCards(2)
   }
 
   /***
@@ -94,13 +97,23 @@ const Game = ({ location }) => {
     return (card === choiceOne) || (card === choiceTwo) || (card.pair)
   }
 
+  /***
+   *
+   */
+  const checkComplete = ():void => {
+    if(matchedCards === randomCards.length) {
+      setModalVisibility(true)
+    }
+  }
+
   useEffect(() => {
     if (choiceOne && choiceTwo) {
       setCardDisabled(true)
       if (checkChoices(choiceOne.src, choiceTwo.src)) {
-        setRandomCardImages(prevState => {
+        setRandomCards(prevState => {
           return prevState.map((card: CardImagesInterface) => {
             if (card.src === choiceOne.src) {
+              setMatchedCards(prevState => prevState + 1)
               return { ...card, pair: true }
             } else {
               return card
@@ -108,6 +121,7 @@ const Game = ({ location }) => {
           })
         })
         resetChoices()
+        checkComplete()
       } else {
         setTimeout(() => resetChoices(), 1000)
       }
@@ -128,7 +142,7 @@ const Game = ({ location }) => {
             return { src: item.image, pair: false }
           })
 
-          randomCards(cards)
+          randomizeCards(cards)
           setCardImages(cards)
           setIsLoaded(true)
         },
@@ -152,13 +166,13 @@ const Game = ({ location }) => {
             <h2>{location.state.gameSeries} Series!</h2>
             <p>Find out all the matching cards!</p>
             <div className={styles.Game__new}
-                 onClick={() => randomCards(cardImages)}>
+                 onClick={() => randomizeCards(cardImages)}>
               New Game
             </div>
           </div>
           <div className={styles.Game__grid}>
             {
-              randomImages.map(item => {
+              randomCards.map(item => {
                 return (
                   <div className={styles.Game__grid}
                        key={item.id}>
@@ -174,8 +188,17 @@ const Game = ({ location }) => {
           </div>
         </div>
         <Modal isOpen={isModalOpen}
-               onClose={() => setModalVisibility(false)}
-               title="Titolo modale"/>
+               onClose={() => setModalVisibility(false)}>
+          <div className={styles.Game__modalComplete}>
+            <h1 className={styles.Game__modalText}>
+              Congratulations, you found all the matching cards!
+            </h1>
+            <div className={styles.Game__new}
+                 onClick={() => randomizeCards(cardImages)}>
+              Play again!
+            </div>
+          </div>
+        </Modal>
       </Layout>
     )
   }

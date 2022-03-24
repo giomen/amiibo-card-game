@@ -4,7 +4,6 @@
 
   &__new {
     padding: 8px 16px;
-    margin-bottom: 30px;
     display: inline-block;
     background: #D42990;
     border-radius: 10px;
@@ -17,5 +16,16 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     grid-gap: 8px;
+    margin-top: 24px;
+  }
+
+  &__modalComplete {
+    padding: 20px;
+  }
+
+  &__modalText {
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 30px;
   }
 }
