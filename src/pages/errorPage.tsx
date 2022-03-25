@@ -1,4 +1,5 @@
 import * as React from "react"
+
 const styles = {
   display: "flex",
   "flex-direction": "column",
@@ -6,13 +7,14 @@ const styles = {
   height: "100vh",
   "justify-content": "center"
 }
-function NotFound() {
+
+function ErrorPage({ location }) {
   return (
-      <div style={styles}>
-        <h1>Page not found</h1>
-        <h3>Sorry, page not found!</h3>
-      </div>
+    <div style={styles}>
+      <h1>Error Occurred!</h1>
+      <h3>{location.state.error}</h3>
+    </div>
   )
 }
 
-export default NotFound
+export default ErrorPage

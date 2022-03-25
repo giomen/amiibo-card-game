@@ -3,7 +3,7 @@ import * as styles from "./Loader.module.scss"
 
 const Loader = () => {
   return (
-    <div className={styles.Loader}>
+    <div data-testid="loader" className={styles.Loader}>
       <div className={styles.Loader__circle}>
         <svg viewBox="25 25 50 50">
           <circle className="path"

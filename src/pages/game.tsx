@@ -10,6 +10,8 @@ import Loader from "../components/Loader/Loader"
 import Layout from "../components/layoutComponents/Layout"
 import Modal from "../components/Modal/Modal"
 import { v4 as uuidv4 } from "uuid"
+import axios, { AxiosResponse } from "axios"
+import { navigate } from "gatsby"
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null as unknown as string)
@@ -132,61 +134,45 @@ const Game = ({ location }) => {
   }, [firstChoice, secondChoice])
 
   useEffect(() => {
-    let isMounted = true
-    fetch(`${AppConstants.API_PATHS.BASE_URL}${PARTIAL_API_PATHS.GAME_SERIES}${location.state.gameSeries}`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error("Sorry, could not fetch data from the server")
-        }
-        return res.json()
-      })
-      .then(
-        (result: Amiibo) => {
-          let cards = result.amiibo.map(item => {
-            return { src: item.image, pair: false }
-          })
 
-          randomizeCards(cards)
-          setCardImages(cards)
-          setIsLoaded(true)
-        },
+    axios.get(`${AppConstants.API_PATHS.BASE_URL}${PARTIAL_API_PATHS.GAME_SERIES}${location.state.gameSeries}`)
+      .then((response:AxiosResponse<Amiibo>) => {
+        setIsLoaded(true)
+        let cards = response.data.amiibo.map(item => {
+          return { src: item.image, pair: false }
+        })
+
+        randomizeCards(cards)
+        setCardImages(cards)
+      },
         (error: Error) => {
-          setIsLoaded(true)
-          setError(error)
-        }
-      )
-      .catch(e => {
-        if (isMounted) {
-          setError(e)
-        }
-      })
-    return () => {
-      isMounted = false
-    }
+          console.log('error: ', error)
+          setTimeout(() => navigate('/errorPage', {state: { 'error': error.message } }), 1000)
+        })
+
   }, [])
 
-  if (error) {
-    return <div>Error: {error.message}</div>
-  } else if (!isLoaded) {
+  if (!isLoaded) {
     return <Loader />
   } else {
     return (
       <Layout>
         <div className={styles.Game}>
           <div className={styles.Game__heading}>
-            <h2>{location.state.gameSeries} Series!</h2>
+            <h2 data-testid="game-series-title">{location.state.gameSeries} Series!</h2>
             <p>Find out all the matching cards!</p>
-            <div className={styles.Game__new}
+            <div data-testid="button-new-game"
+                 className={styles.Game__new}
                  onClick={() => randomizeCards(cardImages)}>
               New Game
             </div>
           </div>
-          <div className={styles.Game__grid}>
+          <div data-testid="card-grid"
+               className={styles.Game__grid}>
             {
               randomCards.map(item => {
                 return (
-                  <div className={styles.Game__grid}
-                       key={item.id}>
+                  <div key={item.id}>
                     <GameCard
                       isFlipped={isCardFlipped(item)}
                       handleChoice={handleChoice}
