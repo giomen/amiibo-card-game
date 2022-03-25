@@ -31,10 +31,10 @@ const Game = ({ location }) => {
    */
   const randomizeCards = (cards: CardImagesInterface[]): void => {
     setModalVisibility(false)
-    if (cardImages.length > 0) {
-      cards = [...cardImages]
-    }
-    const tempCards = reduceCards(cards)
+
+    const tempCards = cardImages.length > 0
+                        ? reduceCards(cardImages)
+                        : reduceCards(cards)
 
     const randomizedCards = [...tempCards, ...tempCards]
       .sort(() => Math.random() - 0.5)
