@@ -4,11 +4,12 @@ import { AppConstants } from "../shared/app-constants"
 import { PARTIAL_API_PATHS } from "../shared/api-path"
 import { Amiibo } from "../shared/models/gameSeries.interface"
 import { CardImagesInterface } from "../shared/models/cardImages.interface"
-import * as styles from '../styles/game.module.scss'
-import GameCard from '../components/GameCard/GameCard'
-import Loader from '../components/Loader/Loader'
-import Layout from '../components/layoutComponents/Layout'
-import Modal from '../components/Modal/Modal'
+import * as styles from "../styles/game.module.scss"
+import GameCard from "../components/GameCard/GameCard"
+import Loader from "../components/Loader/Loader"
+import Layout from "../components/layoutComponents/Layout"
+import Modal from "../components/Modal/Modal"
+import { v4 as uuidv4 } from "uuid"
 
 const Game = ({ location }) => {
   const [error, setError] = useState(null as unknown as string)
@@ -17,8 +18,8 @@ const Game = ({ location }) => {
   const [matchedCards, setMatchedCards] = useState<number>(2)
   const [cardImages, setCardImages] = useState<CardImagesInterface[]>([])
   const [randomCards, setRandomCards] = useState<CardImagesInterface[]>([])
-  const [choiceOne, setChoiceOne] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
-  const [choiceTwo, setChoiceTwo] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
+  const [firstChoice, setFirstChoice] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
+  const [secondChoice, setSecondChoice] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
   const [isModalOpen, setModalVisibility] = useState<boolean>(false)
   /***
@@ -28,14 +29,14 @@ const Game = ({ location }) => {
    */
   const randomizeCards = (cards: CardImagesInterface[]): void => {
     setModalVisibility(false)
-    if(cardImages.length > 0) {
+    if (cardImages.length > 0) {
       cards = [...cardImages]
     }
     const tempCards = reduceCards(cards)
 
     const randomizedCards = [...tempCards, ...tempCards]
       .sort(() => Math.random() - 0.5)
-      .map(card => ({ ...card, id: Math.random().toString() }))
+      .map(card => ({ ...card, id: uuidv4() }))
     setRandomCards(randomizedCards)
     setTurns(0)
     setMatchedCards(2)
@@ -57,7 +58,7 @@ const Game = ({ location }) => {
    * @param max {number}
    */
   const getRandomArbitrary = (min: number, max: number): number => {
-    return Math.random() * (max - min) + min;
+    return Math.random() * (max - min) + min
   }
 
   /***
@@ -66,15 +67,15 @@ const Game = ({ location }) => {
    * @param card {CardImagesInterface} card to check
    */
   const handleChoice = (card: CardImagesInterface): void => {
-    choiceOne ? setChoiceTwo(card) : setChoiceOne(card)
+    firstChoice ? setSecondChoice(card) : setFirstChoice(card)
   }
 
   /***
    * Every two choices, reset values and increment the turn
    */
   const resetChoices = (): void => {
-    setChoiceOne(null as unknown as CardImagesInterface)
-    setChoiceTwo(null as unknown as CardImagesInterface)
+    setFirstChoice(null as unknown as CardImagesInterface)
+    setSecondChoice(null as unknown as CardImagesInterface)
     setTurns(prevState => prevState + 1)
     setCardDisabled(false)
   }
@@ -96,25 +97,25 @@ const Game = ({ location }) => {
    * choice or if is pair
    */
   const isCardFlipped = (card: CardImagesInterface): boolean => {
-    return (card === choiceOne) || (card === choiceTwo) || (card.pair)
+    return (card === firstChoice) || (card === secondChoice) || (card.pair)
   }
 
   /***
    *
    */
-  const checkComplete = ():void => {
-    if(matchedCards === randomCards.length) {
+  const checkComplete = (): void => {
+    if (matchedCards === randomCards.length) {
       setModalVisibility(true)
     }
   }
 
   useEffect(() => {
-    if (choiceOne && choiceTwo) {
+    if (firstChoice && secondChoice) {
       setCardDisabled(true)
-      if (checkChoices(choiceOne.src, choiceTwo.src)) {
+      if (checkChoices(firstChoice.src, secondChoice.src)) {
         setRandomCards(prevState => {
           return prevState.map((card: CardImagesInterface) => {
-            if (card.src === choiceOne.src) {
+            if (card.src === firstChoice.src) {
               setMatchedCards(prevState => prevState + 1)
               return { ...card, pair: true }
             } else {
@@ -128,9 +129,10 @@ const Game = ({ location }) => {
         setTimeout(() => resetChoices(), 1000)
       }
     }
-  }, [choiceOne, choiceTwo])
+  }, [firstChoice, secondChoice])
 
   useEffect(() => {
+    let isMounted = true
     fetch(`${AppConstants.API_PATHS.BASE_URL}${PARTIAL_API_PATHS.GAME_SERIES}${location.state.gameSeries}`)
       .then(res => {
         if (!res.ok) {
@@ -153,7 +155,14 @@ const Game = ({ location }) => {
           setError(error)
         }
       )
-      .catch(e => setError(e))
+      .catch(e => {
+        if (isMounted) {
+          setError(e)
+        }
+      })
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   if (error) {
