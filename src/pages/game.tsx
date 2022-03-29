@@ -14,7 +14,6 @@ import axios, { AxiosResponse } from "axios"
 import { navigate } from "gatsby"
 
 const Game = ({ location }) => {
-  const [error, setError] = useState(null as unknown as string)
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [turns, setTurns] = useState<number>(0)
   const [matchedCards, setMatchedCards] = useState<number>(2)

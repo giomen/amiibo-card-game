@@ -1,4 +1,5 @@
 import * as React from "react"
+
 const styles = {
   display: "flex",
   "flex-direction": "column",
@@ -6,6 +7,7 @@ const styles = {
   height: "100vh",
   "justify-content": "center"
 }
+
 function NotFound() {
   return (
       <div style={styles}>

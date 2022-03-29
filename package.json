@@ -47,7 +47,14 @@
     "jest": "^27.5.1",
     "prettier": "^2.6.0",
     "typescript": "^4.4.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@types/node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
+    "css-loader": "^1.0.0",
+    "css-modules-typescript-loader": "^2.0.1",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.3"
   },
   "resolutions": {
     "@types/react": "^17"
