@@ -1,27 +1,28 @@
 import * as React from "react"
-import {Link, graphql, useStaticQuery} from "gatsby"
+import {Link, graphql, StaticQuery} from "gatsby"
+import {RoutingPagesEnum} from '../../shared/enum/RoutingPages.enum'
+
+export const Navigation = ({data}) => (
+  <nav>
+    <h3>{ data.site.siteMetadata.title }</h3>
+    <div className="links">
+      <Link to="/">{RoutingPagesEnum.HOME}</Link>
+    </div>
+  </nav>
+)
 
 const Navbar = () => {
 
-    const data = useStaticQuery(graphql`
-      query siteQuery {
+    return (
+      <StaticQuery query={graphql`
+      query {
         site {
           siteMetadata {
             title
           }
         }
-      }
-    `)
-
-    const {title} = data.site.siteMetadata
-
-    return (
-        <nav>
-            <h3>{ title }</h3>
-            <div className="links">
-                <Link to="/">Home</Link>
-            </div>
-        </nav>
+      }`
+      } render={data => <Navigation data={data} />} />
     )
 }
 

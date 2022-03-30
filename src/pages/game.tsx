@@ -15,7 +15,6 @@ import { navigate } from "gatsby"
 
 const Game = ({ location }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
-  const [turns, setTurns] = useState<number>(0)
   const [matchedCards, setMatchedCards] = useState<number>(2)
   const [cardImages, setCardImages] = useState<CardImagesInterface[]>([])
   const [randomCards, setRandomCards] = useState<CardImagesInterface[]>([])
@@ -23,6 +22,7 @@ const Game = ({ location }) => {
   const [secondChoice, setSecondChoice] = useState<CardImagesInterface>(null as unknown as CardImagesInterface)
   const [isCardDisabled, setCardDisabled] = useState<boolean>(false)
   const [isModalOpen, setModalVisibility] = useState<boolean>(false)
+
   /***
    * Creates a randomized list of cards, duplicating the original list of cards
    * and setting the property state.
@@ -39,7 +39,6 @@ const Game = ({ location }) => {
       .sort(() => Math.random() - 0.5)
       .map(card => ({ ...card, id: uuidv4() }))
     setRandomCards(randomizedCards)
-    setTurns(0)
     setMatchedCards(2)
   }
 
@@ -77,7 +76,6 @@ const Game = ({ location }) => {
   const resetChoices = (): void => {
     setFirstChoice(null as unknown as CardImagesInterface)
     setSecondChoice(null as unknown as CardImagesInterface)
-    setTurns(prevState => prevState + 1)
     setCardDisabled(false)
   }
 
@@ -102,7 +100,7 @@ const Game = ({ location }) => {
   }
 
   /***
-   *
+   *  Shows modal when all the matches are found
    */
   const checkComplete = (): void => {
     if (matchedCards === randomCards.length) {
@@ -169,9 +167,9 @@ const Game = ({ location }) => {
           <div data-testid="card-grid"
                className={styles.Game__grid}>
             {
-              randomCards.map(item => {
+              randomCards.map((item, index) => {
                 return (
-                  <div key={item.id}>
+                  <div key={index}>
                     <GameCard
                       isFlipped={isCardFlipped(item)}
                       handleChoice={handleChoice}

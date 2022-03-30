@@ -3,9 +3,10 @@ import * as styles from "./HomeCard.module.scss"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import { HomeCardProps } from "./model"
 import { Link } from "gatsby"
+import { RoutingPagesEnum } from "../../shared/enum/RoutingPages.enum"
 
 const HomeCard = (props: HomeCardProps) => {
-  return <Link to="/game" id="link-to-game"
+  return <Link to={`/${RoutingPagesEnum.GAME}`} id="link-to-game"
                state={{ gameSeries: props.item.name }}>
             <div>
               <div className={styles.HomeCard__wrapper}>

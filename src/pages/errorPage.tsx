@@ -1,4 +1,5 @@
 import * as React from "react"
+import Layout from "../components/layoutComponents/Layout"
 
 const styles = {
   display: "flex",
@@ -10,10 +11,12 @@ const styles = {
 
 function ErrorPage({ location }) {
   return (
-    <div style={styles}>
-      <h1>Error Occurred!</h1>
-      <h3>{location.state.error}</h3>
-    </div>
+    <Layout>
+      <div style={styles}>
+        <h1>Error Occurred!</h1>
+        <h3>{location.state.error}</h3>
+      </div>
+    </Layout>
   )
 }
 
